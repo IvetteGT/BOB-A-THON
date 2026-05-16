@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Directorio de Talentos</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🎯 Directorio de Talentos</h1>
+            <nav>
+                <a href="index.html" class="btn-nav">← Volver</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="form-section">
+        <div class="container">
+            <div class="form-card">
+                <h2>✏️ Mi Perfil</h2>
+                <form id="profileForm" onsubmit="saveProfile(event)">
+                    <div class="form-group">
+                        <label for="name">Nombre Completo *</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            required 
+                            placeholder="Ej: Juan Pérez"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skill">Tu Habilidad Principal *</label>
+                        <input 
+                            type="text" 
+                            id="skill" 
+                            required 
+                            placeholder="Ej: Plomería, Clases de Inglés, Carpintería"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Descripción</label>
+                        <textarea 
+                            id="description" 
+                            rows="4"
+                            placeholder="Cuéntanos sobre tu experiencia y servicios"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Teléfono *</label>
+                        <input 
+                            type="tel" 
+                            id="phone" 
+                            required 
+                            placeholder="999-888-777"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            required 
+                            placeholder="tu@email.com"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="neighborhood">Barrio/Colonia *</label>
+                        <input 
+                            type="text" 
+                            id="neighborhood" 
+                            required 
+                            placeholder="Ej: Villa El Salvador"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-large">
+                        💾 Guardar Perfil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- App Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        // Cargar perfil existente si hay uno
+        window.onload = async function() {
+            await initStorage();
+            const myProfile = await getMyProfile();
+            if (myProfile) {
+                document.getElementById('name').value = myProfile.name;
+                document.getElementById('skill').value = myProfile.skill;
+                document.getElementById('description').value = myProfile.description || '';
+                document.getElementById('phone').value = myProfile.phone;
+                document.getElementById('email').value = myProfile.email;
+                document.getElementById('neighborhood').value = myProfile.neighborhood;
+            }
+        };
+
+        async function saveProfile(event) {
+            event.preventDefault();
+
+            const existingProfile = await getMyProfile();
+            const profile = {
+                id: existingProfile?.id || 'my-profile-' + Date.now(),
+                name: document.getElementById('name').value,
+                skill: document.getElementById('skill').value,
+                description: document.getElementById('description').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                neighborhood: document.getElementById('neighborhood').value,
+                is_my_profile: true,
+                created_at: existingProfile?.created_at || new Date().toISOString()
+            };
+
+            const result = await saveMyProfile(profile);
+            if (result) {
+                alert('✅ Perfil guardado exitosamente');
+                window.location.href = 'index.html';
+            } else {
+                alert('❌ Error al guardar el perfil. Intenta de nuevo.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -3,9 +3,65 @@ window.onload = async function() {
     await initStorage();
     if (document.getElementById('profilesContainer')) {
         const profiles = await getAllProfiles();
-        displayProfiles(profiles);
+        await displayProfiles(profiles);
+        await generateDynamicChips(profiles); // Generar chips dinámicos
     }
 };
+
+// Generar chips dinámicos basados en las 5 habilidades más populares
+async function generateDynamicChips(profiles) {
+    const chipsContainer = document.querySelector('.chips-container');
+    if (!chipsContainer) {
+        console.log('No se encontró el contenedor de chips');
+        return;
+    }
+    
+    console.log('Generando chips para', profiles.length, 'perfiles');
+    
+    // Contar cuántos perfiles hay por cada habilidad
+    const skillCount = {};
+    profiles.forEach(profile => {
+        const skill = profile.skill;
+        skillCount[skill] = (skillCount[skill] || 0) + 1;
+    });
+    
+    console.log('Conteo de habilidades:', skillCount);
+    
+    // Convertir a array y ordenar por cantidad (de mayor a menor)
+    const sortedSkills = Object.entries(skillCount)
+        .sort((a, b) => b[1] - a[1])  // Ordenar por cantidad descendente
+        .map(entry => entry[0]);      // Obtener solo los nombres
+    
+    console.log('Habilidades ordenadas por popularidad:', sortedSkills);
+    
+    // Limpiar chips existentes
+    chipsContainer.innerHTML = '';
+    
+    // Mostrar solo las 5 habilidades más populares
+    const top5Skills = sortedSkills.slice(0, 5);
+    
+    if (top5Skills.length > 0) {
+        top5Skills.forEach(skill => {
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.textContent = skill;
+            chip.onclick = () => buscarPorChip(skill);
+            chipsContainer.appendChild(chip);
+        });
+        console.log('✅ Top 5 habilidades mostradas:', top5Skills);
+    } else {
+        // Si no hay habilidades, mostrar chips por defecto
+        console.log('No hay habilidades, mostrando chips por defecto');
+        const defaultSkills = ['Plomería', 'Electricidad', 'Carpintería', 'Clases de Inglés', 'Cuidado de Niños'];
+        defaultSkills.forEach(skill => {
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.textContent = skill;
+            chip.onclick = () => buscarPorChip(skill);
+            chipsContainer.appendChild(chip);
+        });
+    }
+}
 
 // Mostrar perfiles en la página principal
 async function displayProfiles(profiles) {

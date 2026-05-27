@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio de Talentos - Presentación BOB-A-THON 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Controles de navegación */
+        .controls {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 6px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .controls:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .btn {
+            background: rgba(37, 99, 235, 0.8);
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn:hover {
+            background: rgba(30, 64, 175, 0.9);
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Contador de slides */
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Barra de progreso */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #10b981);
+            transition: width 0.3s ease;
+        }
+
+        /* Instrucciones */
+        .instructions {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeInOut 4s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
+
+        /* Mensaje de carga */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            z-index: 999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .controls {
+                bottom: 10px;
+                right: 10px;
+                padding: 3px 6px;
+                gap: 4px;
+            }
+
+            .btn {
+                padding: 3px 8px;
+                font-size: 10px;
+            }
+
+            .slide-counter {
+                top: 15px;
+                right: 15px;
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .instructions {
+                bottom: 70px;
+                font-size: 12px;
+            }
+        }
+
+        /* Pantalla completa */
+        .fullscreen-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(37, 99, 235, 0.8);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de progreso -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Botón pantalla completa -->
+    <button class="fullscreen-btn" id="fullscreenBtn" title="Pantalla completa (F)">⛶</button>
+
+    <!-- Contador de slides -->
+    <div class="slide-counter" id="slideCounter">1 / 14</div>
+
+    <!-- Instrucciones -->
+    <div class="instructions">
+        Usa ← → o los botones para navegar • Presiona F para pantalla completa
+    </div>
+
+    <!-- Contenedor de presentación -->
+    <div class="presentation-container">
+        <!-- Mensaje de carga -->
+        <div class="loading" id="loading">Cargando presentación...</div>
+
+        <!-- Slides -->
+        <div class="slide active" data-slide="1">
+            <img src="slides/01-portada.png.png" alt="Slide 1: Portada">
+        </div>
+        <div class="slide" data-slide="2">
+            <img src="slides/02-problema-estadistica.png.png" alt="Slide 2: Problema - Estadística">
+        </div>
+        <div class="slide" data-slide="3">
+            <img src="slides/03-talentos-ocultos.png.png" alt="Slide 3: Talentos Ocultos">
+        </div>
+        <div class="slide" data-slide="4">
+            <img src="slides/04-intermediarios.png.png" alt="Slide 4: Intermediarios">
+        </div>
+        <div class="slide" data-slide="5">
+            <img src="slides/05-pregunta.png.png" alt="Slide 5: Pregunta Central">
+        </div>
+        <div class="slide" data-slide="6">
+            <img src="slides/06-concepto.png.png" alt="Slide 6: Concepto">
+        </div>
+        <div class="slide" data-slide="7">
+            <img src="slides/07-caracteristicas.png.png" alt="Slide 7: Características">
+        </div>
+        <div class="slide" data-slide="8">
+            <img src="slides/08-tecnologia.png.png" alt="Slide 8: Tecnología">
+        </div>
+        <div class="slide" data-slide="9">
+            <img src="slides/09-transicion-demo.png.png" alt="Slide 9: Transición Demo">
+        </div>
+        <div class="slide" data-slide="10">
+            <img src="slides/10-nota-demo.png.png" alt="Slide 10: Nota Demo">
+        </div>
+        <div class="slide" data-slide="11">
+            <img src="slides/14-impacto-economico.png.png" alt="Slide 11: Impacto Económico">
+        </div>
+        <div class="slide" data-slide="12">
+            <img src="slides/15-impacto-social.png.png" alt="Slide 12: Impacto Social">
+        </div>
+        <div class="slide" data-slide="13">
+            <img src="slides/16-escalabilidad.png.png" alt="Slide 13: Escalabilidad">
+        </div>
+        <div class="slide" data-slide="14">
+            <img src="slides/17-cierre.png.png" alt="Slide 14: Cierre">
+        </div>
+    </div>
+
+    <!-- Controles -->
+    <div class="controls">
+        <button class="btn" id="prevBtn">← Anterior</button>
+        <button class="btn" id="nextBtn">Siguiente →</button>
+    </div>
+
+    <script>
+        // Variables
+        let currentSlide = 1;
+        const totalSlides = 14;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounter = document.getElementById('slideCounter');
+        const progressFill = document.getElementById('progressFill');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const loading = document.getElementById('loading');
+
+        // Ocultar mensaje de carga cuando todas las imágenes carguen
+        let imagesLoaded = 0;
+        const images = document.querySelectorAll('.slide img');
+        images.forEach(img => {
+            img.addEventListener('load', () => {
+                imagesLoaded++;
+                if (imagesLoaded === totalSlides) {
+                    loading.style.display = 'none';
+                }
+            });
+            if (img.complete) {
+                imagesLoaded++;
+            }
+        });
+        if (imagesLoaded === totalSlides) {
+            loading.style.display = 'none';
+        }
+
+        // Función para mostrar slide
+        function showSlide(n) {
+            if (n < 1) n = 1;
+            if (n > totalSlides) n = totalSlides;
+            
+            currentSlide = n;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+            
+            slideCounter.textContent = `${currentSlide} / ${totalSlides}`;
+            
+            const progress = (currentSlide / totalSlides) * 100;
+            progressFill.style.width = `${progress}%`;
+            
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+        }
+
+        // Navegación con botones
+        prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft':
+                case 'PageUp':
+                    showSlide(currentSlide - 1);
+                    break;
+                case 'ArrowRight':
+                case 'PageDown':
+                case ' ':
+                    e.preventDefault();
+                    showSlide(currentSlide + 1);
+                    break;
+                case 'Home':
+                    showSlide(1);
+                    break;
+                case 'End':
+                    showSlide(totalSlides);
+                    break;
+                case 'f':
+                case 'F':
+                    toggleFullscreen();
+                    break;
+                case 'Escape':
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    }
+                    break;
+            }
+        });
+
+        // Pantalla completa
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        // Navegación táctil (swipe)
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                showSlide(currentSlide + 1);
+            }
+            if (touchEndX > touchStartX + 50) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Inicializar
+        showSlide(1);
+
+        console.log('Presentación Directorio de Talentos - BOB-A-THON 2026');
+        console.log(`Total de slides: ${totalSlides}`);
+    </script>
+</body>
+</html>

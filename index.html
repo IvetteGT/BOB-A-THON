@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Directorio de Talentos</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1>🎯 Directorio de Talentos</h1>
+            <nav>
+                <a href="index.html" class="btn-nav active">Inicio</a>
+                <a href="mi-perfil.html" class="btn-nav">Crear Mi Perfil</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Encuentra vecinos con las habilidades que necesitas</h2>
+            <p>Conecta con talento local de confianza</p>
+        </div>
+    </section>
+
+    <!-- Search Bar -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Buscar habilidad (ej: plomería, inglés, carpintería...)"
+                    class="search-input"
+                >
+                <button onclick="buscarTalentos()" class="btn-search">🔍 Buscar</button>
+            </div>
+            
+            <!-- Chips de habilidades populares (se generan dinámicamente) -->
+            <div class="chips-container">
+                <!-- Los chips se generan automáticamente desde JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Lista de Perfiles -->
+    <section class="profiles-section">
+        <div class="container">
+            <div id="profilesContainer" class="profiles-grid">
+                <!-- Los perfiles se cargan dinámicamente aquí -->
+            </div>
+            <div id="noResults" class="no-results" style="display: none;">
+                <p>😕 No se encontraron perfiles con esa habilidad</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>💙 Directorio de Talentos - Conectando comunidades</p>
+        </div>
+    </footer>
+
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- App Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
